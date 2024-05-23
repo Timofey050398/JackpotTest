@@ -1,0 +1,8 @@
+-------------------------------------------------------------------------------
+Test set: JackpotTest
+-------------------------------------------------------------------------------
+Tests run: 7, Failures: 1, Errors: 0, Skipped: 0, Time elapsed: 133.815 s <<< FAILURE! - in JackpotTest
+compareAllPoolAmountIsPresented(JackpotTest)  Time elapsed: 0.006 s  <<< FAILURE!
+java.lang.AssertionError: Amount difference (495.554764177047) is not less than 5 with a tolerance of 0.1
+	at JackpotTest.compareAllPoolAmountIsPresented(JackpotTest.java:50)
+
