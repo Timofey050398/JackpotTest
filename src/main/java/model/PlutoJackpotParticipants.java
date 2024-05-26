@@ -4,7 +4,7 @@ import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.UUID;
 
-public class Pluto_jackpot_participants {
+public class PlutoJackpotParticipants {
     int id;
     UUID user_id;
     int jackpot_id;
@@ -15,9 +15,9 @@ public class Pluto_jackpot_participants {
     BigDecimal  revenue_amount;
     Timestamp created_at;
     Timestamp updated_at;
-    public Pluto_jackpot_participants(){}
+    public PlutoJackpotParticipants(){}
 
-    public Pluto_jackpot_participants(int id, UUID user_id, int jackpot_id, UUID operator_id, int tickets, BigDecimal locked_amount, int place, BigDecimal revenue_amount, Timestamp created_at, Timestamp updated_at) {
+    public PlutoJackpotParticipants(int id, UUID user_id, int jackpot_id, UUID operator_id, int tickets, BigDecimal locked_amount, int place, BigDecimal revenue_amount, Timestamp created_at, Timestamp updated_at) {
         this.id = id;
         this.user_id = user_id;
         this.jackpot_id = jackpot_id;

@@ -4,7 +4,7 @@ import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.UUID;
 
-public class Pluto_jackpot {
+public class PlutoJackpot {
     int id;
     UUID operator_id;
     boolean is_running;
@@ -14,9 +14,9 @@ public class Pluto_jackpot {
     Timestamp created_at;
     Timestamp updated_at;
     BigDecimal revenue_amount;
-    public Pluto_jackpot(){}
+    public PlutoJackpot(){}
 
-    public Pluto_jackpot(int id, UUID operator_id, boolean is_running, String name, Timestamp start_at, Timestamp end_at, Timestamp created_at, Timestamp updated_at, BigDecimal revenue_amount) {
+    public PlutoJackpot(int id, UUID operator_id, boolean is_running, String name, Timestamp start_at, Timestamp end_at, Timestamp created_at, Timestamp updated_at, BigDecimal revenue_amount) {
         this.id = id;
         this.operator_id = operator_id;
         this.is_running = is_running;

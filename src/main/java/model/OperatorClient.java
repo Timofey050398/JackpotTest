@@ -3,7 +3,7 @@ package model;
 import lombok.Data;
 
 @Data
-public class Operator_client {
+public class OperatorClient {
     String id;
     String foreign_id;
     String operator_id;
@@ -13,7 +13,7 @@ public class Operator_client {
     String address_memo;
     long total_earned_amount;
 
-    public Operator_client(String id, String foreign_id, String operator_id, String created_at, String updated_at, String address, String address_memo, long total_earned_amount) {
+    public OperatorClient(String id, String foreign_id, String operator_id, String created_at, String updated_at, String address, String address_memo, long total_earned_amount) {
         this.id = id;
         this.foreign_id = foreign_id;
         this.operator_id = operator_id;
@@ -23,7 +23,7 @@ public class Operator_client {
         this.address_memo = address_memo;
         this.total_earned_amount = total_earned_amount;
     }
-    public Operator_client() {
+    public OperatorClient() {
     }
 
     public String getId() {

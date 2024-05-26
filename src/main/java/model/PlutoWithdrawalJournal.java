@@ -4,7 +4,7 @@ import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.UUID;
 
-public class Pluto_withdrawal_journal {
+public class PlutoWithdrawalJournal {
     UUID id;
     String hash;
     int status_id;
@@ -114,7 +114,7 @@ public class Pluto_withdrawal_journal {
         this.updated_at = updated_at;
     }
 
-    public Pluto_withdrawal_journal(UUID id, String hash, int status_id, BigDecimal amount, int transaction_fee, UUID user_id, UUID operator_id, String user_address, String operator_address, UUID request_id, Timestamp created_at, Timestamp updated_at) {
+    public PlutoWithdrawalJournal(UUID id, String hash, int status_id, BigDecimal amount, int transaction_fee, UUID user_id, UUID operator_id, String user_address, String operator_address, UUID request_id, Timestamp created_at, Timestamp updated_at) {
         this.id = id;
         this.hash = hash;
         this.status_id = status_id;
