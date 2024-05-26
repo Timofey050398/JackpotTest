@@ -25,10 +25,11 @@
             <!--Тег scope указывает на область видимости зависимости: она видна только тестовым классам в директории src/test/java-->
             <scope>test,compile</scope>
         </dependency>
+        <!-- Раскоммитить для логов -->
         <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-classic</artifactId>
-            <version>1.2.3</version> <!-- Версия может быть другой -->
+            <version>1.5.6</version>
         </dependency>
         <!-- https://mvnrepository.com/artifact/com.github.javafaker/javafaker -->
         <dependency>
@@ -70,6 +71,12 @@
             <artifactId>aspectjweaver</artifactId>
             <version>1.9.7</version>
             <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+            <version>4.2.0</version>
+            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>io.rest-assured</groupId>
@@ -131,7 +138,8 @@
                 <artifactId>allure-maven</artifactId>
                 <version>2.10.0</version>
                 <configuration>
-                    <reportVersion>2.15.0</reportVersion>
+                    <reportVersion>2.13.8</reportVersion>
+                    <resultsDirectory>allure-results</resultsDirectory>
                 </configuration>
             </plugin>
         </plugins>
