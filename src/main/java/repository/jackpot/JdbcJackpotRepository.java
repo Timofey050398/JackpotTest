@@ -1,25 +1,23 @@
-package repository;
+package repository.jackpot;
 
-import constants.ConfigConstants;
 import connector.Connector;
-import variables.Variables;
+import model.Pluto_user_journal;
+import repository.user.JdbcUserRepository;
 import io.qameta.allure.Step;
 import model.Pluto_jackpot_participants;
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.sql.*;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-import static org.junit.Assert.assertEquals;
 
-public class JdbcJackpotRepository {
-    private final Connector connector;
+public class JdbcJackpotRepository extends JackpotRepository{
 
     public JdbcJackpotRepository(Connector connector) {
-        this.connector = connector;
+        super(connector);
     }
     public boolean isJackpotRunning(int jackpotId) {
         String sql = "SELECT is_running FROM pluto_jackpot WHERE id = ?";
@@ -40,33 +38,6 @@ public class JdbcJackpotRepository {
             throw new RuntimeException("Error checking if jackpot is running", e);
         }
     }
-    @Step("Дождаться завершения джекпота")
-    public void waitForJackpotToStopRunning(int jackpotId,long minutes) {
-        final int checkIntervalMs = 5000; // Интервал проверки в миллисекундах
-        final long maxWaitTimeMs = minutes * 60 * 1000; // Максимальное время ожидания в миллисекундах (сейчас в тесте 11 минут)
-        long startTime = System.currentTimeMillis(); // Время начала проверки
-
-        while (true) {
-            if (!isJackpotRunning(jackpotId)) {
-                System.out.println("Jackpot with id " + jackpotId + " has stopped running.");
-                break;
-            }
-
-            long currentTime = System.currentTimeMillis();
-            if ((currentTime - startTime) > maxWaitTimeMs) {
-                System.out.println("Exceeded maximum wait time of 11 minutes for jackpot with id " + jackpotId + ".");
-                break;
-            }
-
-            try {
-                Thread.sleep(checkIntervalMs); // Ждем перед следующей проверкой
-            } catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
-                throw new RuntimeException("Thread was interrupted while waiting for jackpot to stop running", e);
-            }
-        }
-    }
-
     @Step("Получить id активного джекпота")
     public int getActiveJackpotId() {
         String sql = "SELECT id FROM pluto_jackpot WHERE is_running = true";
@@ -83,8 +54,7 @@ public class JdbcJackpotRepository {
             throw new RuntimeException("Ошибка при получении активного ID джекпота", e);
         }
     }
-    @Step
-    ("Изменить размер джекпота по jackpotId : {id}")
+    @Step("Изменить размер джекпота по jackpotId : {id}")
     public void updateRevenueAmountById(int id, BigDecimal newRevenueAmount) {
         String sql = "UPDATE pluto_jackpot SET revenue_amount = ? WHERE id = ?";
 
@@ -103,8 +73,7 @@ public class JdbcJackpotRepository {
             System.out.println(e.getMessage());
         }
     }
-    @Step
-    ("Завершить джекпот по id : {id}")
+    @Step("Завершить джекпот по id : {id}")
     public void endJackpotById(int id) {
         String sql = "UPDATE pluto_jackpot SET end_at = ? WHERE id = ?";
         LocalDateTime currentDateTime = LocalDateTime.now(ZoneId.of("GMT"));
@@ -189,79 +158,63 @@ public class JdbcJackpotRepository {
         return jackpotParticipantsList;
     }
 
-    @Step("Получить сумму выигрышей всех мест")
-    public BigDecimal sumOfParticipantsRevenueAmount(List<Pluto_jackpot_participants> participants){
-        BigDecimal summOfParticipantsRevenueAmount = BigDecimal.valueOf(0);
-        for (Pluto_jackpot_participants participant : participants) {
-            summOfParticipantsRevenueAmount = summOfParticipantsRevenueAmount.add(participant.getRevenue_amount());
-        }
-        return summOfParticipantsRevenueAmount;
-    }
-    @Step("Получить размер выигрыша по месту")
-    public BigDecimal getRevenueAmountByPlace(List<Pluto_jackpot_participants> participants, int place) {
-        for (Pluto_jackpot_participants participant : participants) {
-            if (participant.getPlace() == place) {
-                return participant.getRevenue_amount();
+
+    @Step("Установить всем записям дату стейка {days} дней назад")
+    public void setCreatedAtDaysBefore(int days) {
+        String sql = "UPDATE pluto_user_journal SET created_at = ? WHERE operation_type = 40";
+        LocalDateTime currentDateTime = LocalDateTime.now(ZoneId.of("GMT"));
+        LocalDateTime yesterdayDateTime = currentDateTime.minus(days, ChronoUnit.DAYS);
+        Timestamp timestamp = Timestamp.valueOf(yesterdayDateTime);
+
+        try (Connection conn = connector.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setTimestamp(1, timestamp);
+
+            int affectedRows = pstmt.executeUpdate();
+            if (affectedRows == 0) {
+                throw new SQLException("Обновление не выполнено, возможно, нет записей с типом операции 40.");
             }
-        }
-        throw new RuntimeException("Нет пользователя с заданным местом " + place);
-    }
 
-
-
-    @Step("Проверка, что остаток от пулла {amountDiffUSDT} меньше 5 USDT")
-    public static boolean isAmountDiffLessThanExpected(double amountDiffUSDT, double expectedDiff) {
-        double threshold = 0.1;// Целевое значение
-
-        // Проверка, что абсолютное значение разницы меньше порога
-        return Math.abs(amountDiffUSDT - expectedDiff) < threshold;
-    }
-    @Step("Проверить, что приз совпадает с ожидаемым : {expectedResult} с погрешностью {tolerance}")
-    public static void comparePriseWithExpected(List<Double> actualResult, double expectedResult,double tolerance) {
-        for (Double participantAmount : actualResult) {
-            assertEquals("Value " + participantAmount + " is not within the tolerance of " + expectedResult,
-                    expectedResult, participantAmount, tolerance);
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
         }
     }
-    @Step("Проверить, что фактический приз {actualResult} совпадает с ожидаемым : {expectedResult} с погрешностью {tolerance}")
-    public static void comparePriseWithExpected(double actualResult, double expectedResult,double tolerance) {
-            assertEquals("Value " + actualResult + " is not within the tolerance of " + expectedResult,
-                    expectedResult, actualResult, tolerance);
-    }
-    @Step("Привести значение к значению с точностью")
-    public static Double setAmountToDecimal(BigDecimal amount){
-        return amount.divide(ConfigConstants.DECIMAL,18, RoundingMode.HALF_UP).doubleValue();
-    }
-    @Step("Убедиться, что приз места {place} совпадает с ожидаемым")
-    public static void comparePlaceAmount(BigDecimal jackpotAmount, JdbcJackpotRepository jackpot,List<Pluto_jackpot_participants> participants, int place){
-        double jackpotAmountFWD = JdbcJackpotRepository.setAmountToDecimal(jackpotAmount);
-        double placePercent;
-        switch (place) {
-            case 1:
-                placePercent = 0.25;
-                break;
-            case 2:
-                placePercent = 0.12;
-                break;
-            case 3:
-                placePercent = 0.07;
-                break;
-            case 4:
-                placePercent = 0.03;
-                break;
-            case 5:
-                placePercent = 0.02;
-                break;
-            default:
-                throw new IllegalArgumentException("Invalid place: " + place);
+    @Step("Посчитать сумму стейка по пользователю с foreign_id : {foreign_id}")
+    public BigDecimal calculateUserStake(String foreign_id) {
+        String sql = "SELECT * FROM pluto_user_journal WHERE operation_type = 40 AND user_id = ?::uuid";
+        JdbcUserRepository userRepository = new JdbcUserRepository(connector);
+        String userId = userRepository.getIdByForeignId(foreign_id);
+        BigDecimal userStakeAmount = BigDecimal.valueOf(0);
+
+        try (Connection conn = connector.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            // Установка параметра в PreparedStatement
+            pstmt.setString(1, userId);
+
+            // Выполнение запроса
+            ResultSet rs = pstmt.executeQuery();
+
+            // Обработка результатов запроса
+            while (rs.next()) {
+                // Создание объекта Pluto_user_journal и добавление его в список
+                Pluto_user_journal userJournal = new Pluto_user_journal(
+                        rs.getInt("id"),
+                        UUID.fromString(rs.getString("user_id")),
+                        UUID.fromString(rs.getString("operator_id")),
+                        rs.getInt("operation_type"),
+                        rs.getBigDecimal("amount"),
+                        rs.getTimestamp("created_at"),
+                        rs.getTimestamp("updated_at")
+                );
+                userStakeAmount = userStakeAmount.add(userJournal.getAmount());
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
-        double expectedAmount = jackpotAmountFWD * placePercent;
-        BigDecimal actualAmountDecimal = jackpot.getRevenueAmountByPlace(participants,place);
-        double actualAmount = JdbcJackpotRepository.setAmountToDecimal(actualAmountDecimal);
-        JdbcJackpotRepository.comparePriseWithExpected(actualAmount,expectedAmount,5);
-    }
-    @Step("Получить значение в USDT")
-    public static double getAmountUSDT(BigDecimal amountFWD){
-        return JdbcJackpotRepository.setAmountToDecimal(amountFWD) * Variables.poolRate;
+
+        return userStakeAmount;
     }
 }

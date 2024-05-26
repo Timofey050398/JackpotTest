@@ -15,10 +15,10 @@ public class Event {
     }
     public Event(boolean common){
         if(common){
-            this.eventId = faker.idNumber().toString();
+            this.eventId = faker.internet().uuid();
             this.resourceId = "33ebdfa9-9a99-4019-a237-04204e1f9ff6";
             this.userId = "1234";
-            this.amountUsd = "100000";
+            this.amountUsd = "1000";
             this.multiplier = 1;
             this.extra = "";
         }

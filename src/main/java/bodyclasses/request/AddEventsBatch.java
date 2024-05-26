@@ -1,7 +1,10 @@
 package bodyclasses.request;
 
+import bodyclasses.builders.GenerateHash;
+import bodyclasses.builders.HeaderBuilder;
 import constants.APIConstants;
 import io.qameta.allure.Step;
+import io.restassured.http.Headers;
 import io.restassured.response.Response;
 
 import java.util.ArrayList;
@@ -25,10 +28,9 @@ public class AddEventsBatch {
     }
     @Step("Send correct POST add_events_batch request")
     public static Response addEventsBatch(List<Event> events){
+        Headers headers = HeaderBuilder.basicHeadersWithList(events);
         Response response =given()
-                .header("Content-type", "application/json")
-                .header("x-rewind-api","M3jKf30r8KWrlLrlVd6VPfEYpFmmErxP")
-                .header("x-rewind-signature","84e695d6dbc2f1cdf57bd1c9660504b954b4e73f38f9fded4574001b044877ad")
+                .headers(headers)
                 .and()
                 .body(events)
                 .when()
@@ -40,10 +42,25 @@ public class AddEventsBatch {
         Event event = new Event(true);
         List<Event> events_request = new ArrayList<>();
         events_request.add(event);
+        Headers headers = HeaderBuilder.basicHeadersWithList(events_request);
         Response response =given()
-                .header("Content-type", "application/json")
-                .header("x-rewind-api","M3jKf30r8KWrlLrlVd6VPfEYpFmmErxP")
-                .header("x-rewind-signature","84e695d6dbc2f1cdf57bd1c9660504b954b4e73f38f9fded4574001b044877ad")
+                .headers(headers)
+                .and()
+                .body(events_request)
+                .when()
+                .post(APIConstants.ADD_EVENTS_BATCH);
+        return response;
+    }
+    @Step("Send correct POST add_events_batch request")
+    public static Response addEventsBatch(int size){
+        List<Event> events_request = new ArrayList<>();
+        for(int i =0;i < size;i++) {
+            Event event = new Event(true);
+            events_request.add(event);
+        }
+        Headers headers = HeaderBuilder.basicHeadersWithList(events_request);
+        Response response =given()
+                .headers(headers)
                 .and()
                 .body(events_request)
                 .when()

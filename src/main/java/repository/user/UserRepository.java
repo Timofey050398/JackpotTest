@@ -1,4 +1,4 @@
-package repository;
+package repository.user;
 import model.Operator_client;
 
 import java.util.List;

@@ -1,5 +1,7 @@
-package repository;
+package repository.user;
+
 import connector.Connector;
+import io.qameta.allure.Step;
 import model.Operator_client;
 import java.sql.*;
 import java.time.LocalDateTime;
@@ -7,7 +9,7 @@ import java.time.ZoneId;
 import java.util.List;
 import java.util.UUID;
 
-public class JdbcUserRepository implements UserRepository{
+public class JdbcUserRepository implements UserRepository {
     private final Connector connector;
 
     public JdbcUserRepository(Connector connector){
@@ -123,6 +125,68 @@ public class JdbcUserRepository implements UserRepository{
             e.printStackTrace();
         }
         return generatedId; // Возвращаем сгенерированный ID
+    }
+    @Step("Проверить, существует ли пользователь с foreign_id : {foreign_id}")
+    public boolean isUserExist(String foreignId) {
+        Operator_client insertedRecord = null;
+        String sqlSelect = "SELECT * FROM operator_clients WHERE foreign_id = ?";
+        try (Connection connection = connector.getConnection();
+             PreparedStatement statement = connection.prepareStatement(sqlSelect)) {
+
+            statement.setString(1, foreignId);
+
+            try (ResultSet resultSet = statement.executeQuery()) {
+                if (resultSet.next()) {
+                    // Создание объекта оператора на основе выбранных данных
+                    insertedRecord = new Operator_client(
+                            resultSet.getString("id"),
+                            resultSet.getString("foreign_id"),
+                            resultSet.getString("operator_id"),
+                            resultSet.getString("created_at"),
+                            resultSet.getString("updated_at"),
+                            resultSet.getString("address_memo"),
+                            resultSet.getString("address"),
+                            resultSet.getLong("total_earned_amount")
+                    );
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        // Проверка на null, чтобы избежать NullPointerException
+        return insertedRecord != null && insertedRecord.getForeign_id().equals(foreignId);
+    }
+    @Step("Получить id пользователя с foreign_id : {foreign_id}")
+    public String getIdByForeignId(String foreign_id) {
+        Operator_client insertedRecord = null;
+        String sqlSelect = "SELECT * FROM operator_clients WHERE foreign_id = ?";
+        try (Connection connection = connector.getConnection();
+             PreparedStatement statement = connection.prepareStatement(sqlSelect)) {
+
+            statement.setString(1, foreign_id);
+
+            try (ResultSet resultSet = statement.executeQuery()) {
+                if (resultSet.next()) {
+                    // Создание объекта оператора на основе выбранных данных
+                    insertedRecord = new Operator_client(
+                            resultSet.getString("id"),
+                            resultSet.getString("foreign_id"),
+                            resultSet.getString("operator_id"),
+                            resultSet.getString("created_at"),
+                            resultSet.getString("updated_at"),
+                            resultSet.getString("address_memo"),
+                            resultSet.getString("address"),
+                            resultSet.getLong("total_earned_amount")
+                    );
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        // Проверка на null, чтобы избежать NullPointerException
+        return insertedRecord.getId();
     }
     @Override
     public Operator_client getById(String id) {
