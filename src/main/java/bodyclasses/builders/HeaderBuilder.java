@@ -1,10 +1,10 @@
 package bodyclasses.builders;
 
 import bodyclasses.request.Event;
+import constants.OperatorAuth;
 import io.qameta.allure.Step;
 import io.restassured.http.Header;
 import io.restassured.http.Headers;
-import constants.APIConstants;
 import io.restassured.response.Response;
 
 import java.util.ArrayList;
@@ -14,7 +14,7 @@ import static org.hamcrest.CoreMatchers.equalTo;
 
 public class HeaderBuilder {
     private static final String contentType = "application/json";
-    private static final String apiKey = APIConstants.API_KEY;
+    private static final String apiKey = OperatorAuth.API_KEY;
 
 
     // Создание объекта заголовков и добавление в него всех трех заголовков

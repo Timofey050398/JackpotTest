@@ -1,7 +1,7 @@
 package bodyclasses.builders;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import constants.APIConstants;
+import constants.OperatorAuth;
 import io.qameta.allure.Step;
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
@@ -16,7 +16,7 @@ public class GenerateHash {
             ObjectMapper objectMapper = new ObjectMapper();
             String jsonString = objectMapper.writeValueAsString(body);
             Mac sha256Hmac = Mac.getInstance("HmacSHA256");
-            SecretKeySpec secretKeySpec = new SecretKeySpec(APIConstants.SECRET_KEY.getBytes(StandardCharsets.UTF_8), "HmacSHA256");
+            SecretKeySpec secretKeySpec = new SecretKeySpec(OperatorAuth.SECRET_KEY.getBytes(StandardCharsets.UTF_8), "HmacSHA256");
             sha256Hmac.init(secretKeySpec);
 
             byte[] hmacSha256 = sha256Hmac.doFinal(jsonString.getBytes(StandardCharsets.UTF_8));
@@ -33,7 +33,7 @@ public class GenerateHash {
             ObjectMapper objectMapper = new ObjectMapper();
             String jsonString = objectMapper.writeValueAsString(body);
             Mac sha256Hmac = Mac.getInstance("HmacSHA256");
-            SecretKeySpec secretKeySpec = new SecretKeySpec(APIConstants.SECRET_KEY.getBytes(StandardCharsets.UTF_8), "HmacSHA256");
+            SecretKeySpec secretKeySpec = new SecretKeySpec(OperatorAuth.SECRET_KEY.getBytes(StandardCharsets.UTF_8), "HmacSHA256");
             sha256Hmac.init(secretKeySpec);
             byte[] hmacSha256 = sha256Hmac.doFinal(jsonString.getBytes(StandardCharsets.UTF_8));
             return bytesToHex(hmacSha256);

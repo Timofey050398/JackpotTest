@@ -6,7 +6,7 @@ import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.UUID;
 
-public class Pluto_user_journal {
+public class PlutoUserJournal {
     int id;
     UUID user_id;
     UUID operator_id;
@@ -71,7 +71,7 @@ public class Pluto_user_journal {
         this.updated_at = updated_at;
     }
 
-    public Pluto_user_journal(int id, UUID user_id, UUID operator_id, int operation_type, BigDecimal amount, Timestamp created_at, Timestamp updated_at) {
+    public PlutoUserJournal(int id, UUID user_id, UUID operator_id, int operation_type, BigDecimal amount, Timestamp created_at, Timestamp updated_at) {
         this.id = id;
         this.user_id = user_id;
         this.operator_id = operator_id;

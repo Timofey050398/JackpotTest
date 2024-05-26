@@ -1,7 +1,7 @@
 package bodyclasses.request;
 import bodyclasses.builders.HeaderBuilder;
 import io.restassured.http.Headers;
-import constants.APIConstants;
+import constants.APIRoutes;
 import io.qameta.allure.Step;
 import io.restassured.response.Response;
 import repository.jackpot.JdbcJackpotRepository;
@@ -51,7 +51,7 @@ public class Stake {
                 .and()
                 .body(stake)
                 .when()
-                .post(APIConstants.STAKE);
+                .post(APIRoutes.STAKE);
         return response;
     }
     @Step("Send correct POST /api/v2.1/user/stake request")
@@ -61,7 +61,7 @@ public class Stake {
                 .and()
                 .body(stake)
                 .when()
-                .post(APIConstants.STAKE);
+                .post(APIRoutes.STAKE);
         return response;
     }
     @Step("Send correct POST /api/v2.1/user/unstake request")
@@ -72,7 +72,7 @@ public class Stake {
                 .and()
                 .body(stake)
                 .when()
-                .post(APIConstants.UNSTAKE);
+                .post(APIRoutes.UNSTAKE);
         return response;
     }
     @Step("Send correct POST /api/v2.1/user/unstake request")
@@ -82,7 +82,7 @@ public class Stake {
                 .and()
                 .body(stake)
                 .when()
-                .post(APIConstants.UNSTAKE);
+                .post(APIRoutes.UNSTAKE);
         return response;
     }
     @Step("Проверить корректный ответ на стейк/анстейк")

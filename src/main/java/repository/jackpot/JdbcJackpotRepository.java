@@ -1,10 +1,10 @@
 package repository.jackpot;
 
 import connector.Connector;
-import model.Pluto_user_journal;
+import model.PlutoUserJournal;
 import repository.user.JdbcUserRepository;
 import io.qameta.allure.Step;
-import model.Pluto_jackpot_participants;
+import model.PlutoJackpotParticipants;
 import java.math.BigDecimal;
 import java.sql.*;
 import java.time.LocalDateTime;
@@ -116,8 +116,8 @@ public class JdbcJackpotRepository extends JackpotRepository{
         }
     }
     @Step("Получить список участников джекпота по jackpotId : {jackpotId}")
-    public List<Pluto_jackpot_participants> getJackpotParticipantsListByJackpotId(int jackpotId) {
-        List<Pluto_jackpot_participants> jackpotParticipantsList = new ArrayList<>();
+    public List<PlutoJackpotParticipants> getJackpotParticipantsListByJackpotId(int jackpotId) {
+        List<PlutoJackpotParticipants> jackpotParticipantsList = new ArrayList<>();
 
 
         String sql = "SELECT * FROM pluto_jackpot_participants WHERE jackpot_id = ? ORDER BY place ASC";
@@ -136,7 +136,7 @@ public class JdbcJackpotRepository extends JackpotRepository{
 
 
                 // Создание объекта Jackpot и добавление его в список
-                Pluto_jackpot_participants jackpotParticipant = new Pluto_jackpot_participants(
+                PlutoJackpotParticipants jackpotParticipant = new PlutoJackpotParticipants(
                         rs.getInt("id"),
                         UUID.fromString(rs.getString("user_id")),
                         rs.getInt("jackpot_id"),
@@ -198,8 +198,8 @@ public class JdbcJackpotRepository extends JackpotRepository{
 
             // Обработка результатов запроса
             while (rs.next()) {
-                // Создание объекта Pluto_user_journal и добавление его в список
-                Pluto_user_journal userJournal = new Pluto_user_journal(
+                // Создание объекта PlutoUserJournal и добавление его в список
+                PlutoUserJournal userJournal = new PlutoUserJournal(
                         rs.getInt("id"),
                         UUID.fromString(rs.getString("user_id")),
                         UUID.fromString(rs.getString("operator_id")),

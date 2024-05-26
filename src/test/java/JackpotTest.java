@@ -1,5 +1,4 @@
 import bodyclasses.response.CommonInfo;
-import constants.ConfigConstants;
 import connector.Connector;
 import connector.PostgresConnector;
 import org.junit.ClassRule;
@@ -7,7 +6,7 @@ import repository.jackpot.JackpotManager;
 import variables.Variables;
 import io.qameta.allure.junit4.DisplayName;
 import io.restassured.RestAssured;
-import model.Pluto_jackpot_participants;
+import model.PlutoJackpotParticipants;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import repository.jackpot.JdbcJackpotRepository;
@@ -21,14 +20,14 @@ public class JackpotTest {
 
 
     private static BigDecimal jackpotAmount;
-    private static List<Pluto_jackpot_participants> participants;
+    private static List<PlutoJackpotParticipants> participants;
     @ClassRule
     public static EnvironmentSetup environmentSetup = new EnvironmentSetup();
     @BeforeClass
     public static void setup(){
         RestAssured.baseURI = environmentSetup.getProperty("API_URL");
         //Выбрать сумму джекпота
-        jackpotAmount = ConfigConstants.JACKPOT_AMOUNT;
+        jackpotAmount = JackpotManager.generateJackpotAmount();
         Connector sqlConnector = PostgresConnector.builder()
                 .url(environmentSetup.getProperty("DB_URL"))
                 .user(environmentSetup.getProperty("DB_USER"))
@@ -57,7 +56,7 @@ public class JackpotTest {
         List<Double> participantsAmount = new ArrayList<>();
         double expectedValue = 5.0;
         double tolerance = 0.2;
-        for(Pluto_jackpot_participants participant :participants){
+        for(PlutoJackpotParticipants participant :participants){
             if(participant.getPlace()>5 && participant.getRevenue_amount().compareTo(BigDecimal.ZERO) != 0){
                 BigDecimal participantAmount = participant.getRevenue_amount();
                 double participantAmountUSDT = JackpotManager.getAmountUSDT(participantAmount);

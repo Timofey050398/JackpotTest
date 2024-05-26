@@ -1,12 +1,12 @@
 package repository.user;
-import model.Operator_client;
+import model.OperatorClient;
 
 import java.util.List;
 
 public interface UserRepository {
-    Operator_client create(Operator_client operator_client);
-    Operator_client getById(String id);
-    List<Operator_client> getAllUsers();
+    OperatorClient create(OperatorClient operator_client);
+    OperatorClient getById(String id);
+    List<OperatorClient> getAllUsers();
     void deleteById(long id);
     List<String> getForeignIds();
 }

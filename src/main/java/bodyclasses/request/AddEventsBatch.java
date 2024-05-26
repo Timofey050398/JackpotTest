@@ -1,8 +1,7 @@
 package bodyclasses.request;
 
-import bodyclasses.builders.GenerateHash;
 import bodyclasses.builders.HeaderBuilder;
-import constants.APIConstants;
+import constants.APIRoutes;
 import io.qameta.allure.Step;
 import io.restassured.http.Headers;
 import io.restassured.response.Response;
@@ -34,7 +33,7 @@ public class AddEventsBatch {
                 .and()
                 .body(events)
                 .when()
-                .post(APIConstants.ADD_EVENTS_BATCH);
+                .post(APIRoutes.ADD_EVENTS_BATCH);
         return response;
     }
     @Step("Send correct POST add_events_batch request")
@@ -48,7 +47,7 @@ public class AddEventsBatch {
                 .and()
                 .body(events_request)
                 .when()
-                .post(APIConstants.ADD_EVENTS_BATCH);
+                .post(APIRoutes.ADD_EVENTS_BATCH);
         return response;
     }
     @Step("Send correct POST add_events_batch request")
@@ -64,7 +63,7 @@ public class AddEventsBatch {
                 .and()
                 .body(events_request)
                 .when()
-                .post(APIConstants.ADD_EVENTS_BATCH);
+                .post(APIRoutes.ADD_EVENTS_BATCH);
         return response;
     }
 }

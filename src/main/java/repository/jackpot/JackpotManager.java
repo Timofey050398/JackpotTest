@@ -3,11 +3,12 @@ package repository.jackpot;
 import connector.Connector;
 import constants.ConfigConstants;
 import io.qameta.allure.Step;
-import model.Pluto_jackpot_participants;
+import model.PlutoJackpotParticipants;
 import variables.Variables;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.List;
+import java.util.Random;
 
 import static org.junit.Assert.assertEquals;
 
@@ -17,6 +18,17 @@ public class JackpotManager extends JackpotRepository{
     public JackpotManager(Connector connector) {
         super(connector);
         this.jdbcJackpotRepository = new JdbcJackpotRepository(connector);
+    }
+    @Step("Сгенерировать сумму джекпота")
+    public static BigDecimal generateJackpotAmount(){
+        Random random = new Random();
+        int min = 30000;
+        int max = 180000;
+        int number = random.nextInt(max - min + 1) + min;
+        String randomNumber = Integer.toString(number);
+        randomNumber = randomNumber +  "000000000000000000";
+        BigDecimal jackpotAmount = new BigDecimal(randomNumber);
+        return jackpotAmount;
     }
 
     @Step("Дождаться завершения джекпота")
@@ -46,16 +58,16 @@ public class JackpotManager extends JackpotRepository{
         }
     }
     @Step("Получить сумму выигрышей всех мест")
-    public static BigDecimal sumOfParticipantsRevenueAmount(List<Pluto_jackpot_participants> participants){
+    public static BigDecimal sumOfParticipantsRevenueAmount(List<PlutoJackpotParticipants> participants){
         BigDecimal summOfParticipantsRevenueAmount = BigDecimal.valueOf(0);
-        for (Pluto_jackpot_participants participant : participants) {
+        for (PlutoJackpotParticipants participant : participants) {
             summOfParticipantsRevenueAmount = summOfParticipantsRevenueAmount.add(participant.getRevenue_amount());
         }
         return summOfParticipantsRevenueAmount;
     }
     @Step("Получить размер выигрыша по месту {place}")
-    public static BigDecimal getRevenueAmountByPlace(List<Pluto_jackpot_participants> participants, int place) {
-        for (Pluto_jackpot_participants participant : participants) {
+    public static BigDecimal getRevenueAmountByPlace(List<PlutoJackpotParticipants> participants, int place) {
+        for (PlutoJackpotParticipants participant : participants) {
             if (participant.getPlace() == place) {
                 return participant.getRevenue_amount();
             }
@@ -89,7 +101,7 @@ public class JackpotManager extends JackpotRepository{
         return amount.divide(ConfigConstants.DECIMAL,18, RoundingMode.HALF_UP).doubleValue();
     }
     @Step("Убедиться, что приз места {place} совпадает с ожидаемым")
-    public static void comparePlaceAmount(BigDecimal jackpotAmount, List<Pluto_jackpot_participants> participants, int place){
+    public static void comparePlaceAmount(BigDecimal jackpotAmount, List<PlutoJackpotParticipants> participants, int place){
         double jackpotAmountFWD = setAmountToDecimal(jackpotAmount);
         double placePercent;
         switch (place) {

@@ -2,7 +2,7 @@ package repository.user;
 
 import connector.Connector;
 import io.qameta.allure.Step;
-import model.Operator_client;
+import model.OperatorClient;
 import java.sql.*;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -32,8 +32,8 @@ public class JdbcUserRepository implements UserRepository {
     }
 */
     @Override
-    public Operator_client create(Operator_client operator_client) {
-        Operator_client insertedRecord = null; // Инициализируем значение вставленной записи значением по умолчанию
+    public OperatorClient create(OperatorClient operator_client) {
+        OperatorClient insertedRecord = null; // Инициализируем значение вставленной записи значением по умолчанию
         String sqlInsert = "INSERT INTO operator_clients (foreign_id, operator_id, created_at, updated_at, address_memo, address, total_earned_amount) VALUES (?, ?, ?, ?, ?, ?, ?)";
         String sqlSelect = "SELECT * FROM operator_clients WHERE id = ?"; // Запрос для выборки вставленной строки
 
@@ -72,7 +72,7 @@ public class JdbcUserRepository implements UserRepository {
             try (ResultSet resultSet = statementSelect.executeQuery()) {
                 if (resultSet.next()) {
                     // Создание объекта оператора на основе выбранных данных
-                    insertedRecord = new Operator_client(
+                    insertedRecord = new OperatorClient(
                             resultSet.getString("id"),
                             resultSet.getString("foreign_id"),
                             resultSet.getString("operator_id"),
@@ -90,7 +90,7 @@ public class JdbcUserRepository implements UserRepository {
         }
         return insertedRecord; // Возвращаем вставленную запись
     }
-    public UUID createAndGetId(Operator_client operator_client) {
+    public UUID createAndGetId(OperatorClient operator_client) {
         UUID generatedId = null; // Инициализируем значение ID значением по умолчанию
         String sql = "INSERT INTO operator_clients (foreign_id, operator_id, created_at, updated_at, address_memo, address, total_earned_amount) VALUES (?, ?, ?, ?, ?, ?, ?)";
         try (Connection connection = connector.getConnection();
@@ -128,7 +128,7 @@ public class JdbcUserRepository implements UserRepository {
     }
     @Step("Проверить, существует ли пользователь с foreign_id : {foreign_id}")
     public boolean isUserExist(String foreignId) {
-        Operator_client insertedRecord = null;
+        OperatorClient insertedRecord = null;
         String sqlSelect = "SELECT * FROM operator_clients WHERE foreign_id = ?";
         try (Connection connection = connector.getConnection();
              PreparedStatement statement = connection.prepareStatement(sqlSelect)) {
@@ -138,7 +138,7 @@ public class JdbcUserRepository implements UserRepository {
             try (ResultSet resultSet = statement.executeQuery()) {
                 if (resultSet.next()) {
                     // Создание объекта оператора на основе выбранных данных
-                    insertedRecord = new Operator_client(
+                    insertedRecord = new OperatorClient(
                             resultSet.getString("id"),
                             resultSet.getString("foreign_id"),
                             resultSet.getString("operator_id"),
@@ -159,7 +159,7 @@ public class JdbcUserRepository implements UserRepository {
     }
     @Step("Получить id пользователя с foreign_id : {foreign_id}")
     public String getIdByForeignId(String foreign_id) {
-        Operator_client insertedRecord = null;
+        OperatorClient insertedRecord = null;
         String sqlSelect = "SELECT * FROM operator_clients WHERE foreign_id = ?";
         try (Connection connection = connector.getConnection();
              PreparedStatement statement = connection.prepareStatement(sqlSelect)) {
@@ -169,7 +169,7 @@ public class JdbcUserRepository implements UserRepository {
             try (ResultSet resultSet = statement.executeQuery()) {
                 if (resultSet.next()) {
                     // Создание объекта оператора на основе выбранных данных
-                    insertedRecord = new Operator_client(
+                    insertedRecord = new OperatorClient(
                             resultSet.getString("id"),
                             resultSet.getString("foreign_id"),
                             resultSet.getString("operator_id"),
@@ -189,12 +189,12 @@ public class JdbcUserRepository implements UserRepository {
         return insertedRecord.getId();
     }
     @Override
-    public Operator_client getById(String id) {
+    public OperatorClient getById(String id) {
         return null;
     }
 
     @Override
-    public List<Operator_client> getAllUsers() {
+    public List<OperatorClient> getAllUsers() {
         return null;
     }
 
