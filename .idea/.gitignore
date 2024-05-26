@@ -1,7 +1,0 @@
-# Default ignored files
-/shelf/
-/workspace.xml
-/target/
-/test/resources/enviroment.properties
-src/main/java/constants/OperatorAuth.java
-/.allure/
