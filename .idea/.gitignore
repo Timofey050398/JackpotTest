@@ -4,4 +4,4 @@
 /target/
 src/test/resources/*
 src/main/java/constants/OperatorAuth.java
-/.allure/
+.allure/
