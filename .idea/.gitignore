@@ -2,6 +2,6 @@
 /shelf/
 /workspace.xml
 /target/
-/test/resources/enviroment.properties
+src/test/resources/enviroment.properties
 src/main/java/constants/OperatorAuth.java
-/.allure/
+.allure/
