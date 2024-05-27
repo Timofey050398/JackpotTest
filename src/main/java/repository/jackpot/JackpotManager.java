@@ -3,10 +3,12 @@ package repository.jackpot;
 import connector.Connector;
 import constants.ConfigConstants;
 import io.qameta.allure.Step;
+import io.qameta.allure.junit4.DisplayName;
 import model.PlutoJackpotParticipants;
 import variables.Variables;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
@@ -22,8 +24,8 @@ public class JackpotManager extends JackpotRepository{
     @Step("Сгенерировать сумму джекпота")
     public static BigDecimal generateJackpotAmount(){
         Random random = new Random();
-        int min = 30000;
-        int max = 180000;
+        int min = 300000;
+        int max = 1800000;
         int number = random.nextInt(max - min + 1) + min;
         String randomNumber = Integer.toString(number);
         randomNumber = randomNumber +  "000000000000000000";
@@ -77,7 +79,7 @@ public class JackpotManager extends JackpotRepository{
 
 
 
-    @Step("Проверка, что остаток от пулла {amountDiffUSDT} меньше 5 USDT")
+    @Step("Проверка, что остаток от пулла {amountDiffUSDT} меньше {expectedDiff} USDT")
     public static boolean isAmountDiffLessThanExpected(double amountDiffUSDT, double expectedDiff) {
         double threshold = 0.1;// Целевое значение
 
@@ -131,6 +133,15 @@ public class JackpotManager extends JackpotRepository{
     @Step("Получить значение в USDT")
     public static double getAmountUSDT(BigDecimal amountFWD){
         return setAmountToDecimal(amountFWD) * Variables.poolRate;
+    }
+    @Step("Проверить, что все что пользователи получили приз")
+    public static boolean isAllUsersWinners(List<PlutoJackpotParticipants> participants){
+        for (PlutoJackpotParticipants participant : participants) {
+            if (participant.getRevenue_amount().compareTo(BigDecimal.ZERO) == 0) {
+                return false; // Найден участник, который не получил приз
+            }
+        }
+        return true; // Все участники получили приз
     }
 
 }

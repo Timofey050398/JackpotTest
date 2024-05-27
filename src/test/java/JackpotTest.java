@@ -1,6 +1,7 @@
 import bodyclasses.response.CommonInfo;
 import connector.Connector;
 import connector.PostgresConnector;
+import io.qameta.allure.Step;
 import org.junit.ClassRule;
 import repository.jackpot.JackpotManager;
 import variables.Variables;
@@ -43,12 +44,12 @@ public class JackpotTest {
         Variables.poolRate = CommonInfo.getPoolRate();
     }
     @Test
-    @DisplayName("Проверить, что весь пулл разыгран")
+    @DisplayName("Проверить, что весь пулл разыгран либо разыгран между всеми пользователями")
     public void compareAllPoolAmountIsPresented(){
         BigDecimal amountDiff = jackpotAmount.subtract(JackpotManager.sumOfParticipantsRevenueAmount(participants));
         double amountDiffUSDT = JackpotManager.getAmountUSDT(amountDiff);
-        assertTrue("Amount difference (" + amountDiffUSDT + ") is not less than 5 with a tolerance of 0.1",
-                JackpotManager.isAmountDiffLessThanExpected(amountDiffUSDT,5));
+        boolean result = JackpotManager.isAmountDiffLessThanExpected(amountDiffUSDT,5) || JackpotManager.isAllUsersWinners(participants);
+        assertTrue("Amount difference (" + amountDiffUSDT + ") is not less than 5 with a tolerance of 0.1 or not all users received prizes", result);
     }
     @Test
     @DisplayName("Проверить, что пользователи с 6 по n место получили приз, эквивалентно 5 USDT")

@@ -1,7 +1,9 @@
 package repository.jackpot;
 
 import connector.Connector;
+import io.qameta.allure.junit4.DisplayName;
 import model.PlutoUserJournal;
+import org.junit.Test;
 import repository.user.JdbcUserRepository;
 import io.qameta.allure.Step;
 import model.PlutoJackpotParticipants;
@@ -157,7 +159,6 @@ public class JdbcJackpotRepository extends JackpotRepository{
 
         return jackpotParticipantsList;
     }
-
 
     @Step("Установить всем записям дату стейка {days} дней назад")
     public void setCreatedAtDaysBefore(int days) {
