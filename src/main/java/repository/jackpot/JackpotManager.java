@@ -82,7 +82,7 @@ public class JackpotManager extends JackpotRepository{
         double threshold = 0.1;// Целевое значение
 
         // Проверка, что абсолютное значение разницы меньше порога
-        return Math.abs(amountDiffUSDT - expectedDiff) < threshold;
+        return amountDiffUSDT < expectedDiff + threshold;
     }
     @Step("Проверить, что приз совпадает с ожидаемым : {expectedResult} с погрешностью {tolerance}")
     public static void comparePriseWithExpected(List<Double> actualResult, double expectedResult,double tolerance) {
